@@ -1,0 +1,34 @@
+version "2.5"
+
+class CrtLottesHandler : StaticEventHandler
+{
+	override void UiTick()
+	{
+		PlayerInfo p = players[consoleplayer];
+		if (Cvar.GetCVar("gl_crt_lottes", p).GetInt() > 0)
+		{
+			Shader.SetEnabled(p, "CRT-Lottes", true);
+
+			Shader.SetUniform1f(p, "CRT-Lottes", "hardScan", Cvar.GetCVar("gl_crt_lottes_hardScan", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "hardPix", Cvar.GetCVar("gl_crt_lottes_hardPix", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "shadowMask", Cvar.GetCVar("gl_crt_lottes_shadowMask", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "maskRotate", Cvar.GetCVar("gl_crt_lottes_maskRotate", p).GetInt());
+			Shader.SetUniform1f(p, "CRT-Lottes", "maskDark", Cvar.GetCVar("gl_crt_lottes_maskDark", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "maskLight", Cvar.GetCVar("gl_crt_lottes_maskLight", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "DO_BLOOM", Cvar.GetCVar("gl_crt_lottes_enable_bloom", p).GetInt());
+			Shader.SetUniform1f(p, "CRT-Lottes", "bloomAmount", Cvar.GetCVar("gl_crt_lottes_bloomAmount", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "shape", Cvar.GetCVar("gl_crt_lottes_shape", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "brightboost", Cvar.GetCVar("gl_crt_lottes_brightboost", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "hardBloomPix", Cvar.GetCVar("gl_crt_lottes_hardBloomPix", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "hardBloomScan", Cvar.GetCVar("gl_crt_lottes_hardBloomScan", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "warp_x", Cvar.GetCVar("gl_crt_lottes_warp_x", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "warp_y", Cvar.GetCVar("gl_crt_lottes_warp_y", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "scaleInLinearGamma", Cvar.GetCVar("gl_crt_lottes_scaleInLinearGamma", p).GetInt());
+			Shader.SetUniform1f(p, "CRT-Lottes", "simpleLinearGamma", Cvar.GetCVar("gl_crt_lottes_simpleLinearGamma", p).GetInt());
+		}
+		else
+		{
+			Shader.SetEnabled(p, "CRT-Lottes", false);
+		}
+	}
+}

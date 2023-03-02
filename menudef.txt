@@ -1,0 +1,47 @@
+AddOptionMenu "OptionsMenu"
+{
+	Submenu "CRT Lottes Options", "CrtLottesOptions"
+}
+
+OptionValue CrtLottes_MaskType
+{
+	0, "Off"
+	1, "Compressed TV"
+	2, "Aperture-grille"
+	3, "Stretched VGA"
+	4, "VGA Style"
+}
+
+OptionMenu "CrtLottesOptions"
+{
+	Title "CRT Lottes Config"
+	Option "Enable", "gl_crt_lottes", "OnOff"
+	Option "Scale in Linear Gamma", "gl_crt_lottes_scaleInLinearGamma", "OnOff"
+	Option "Use Simple Linear Gamma", "gl_crt_lottes_simpleLinearGamma", "OnOff"
+
+	StaticText " "
+	StaticText "Image", "Gray"
+	Slider "Scanline Hardness", "gl_crt_lottes_hardScan", -20.0, 0.0, 1.0, 0
+	Slider "Pixel Hardness", "gl_crt_lottes_hardPix", -20.0, 0.0, 1.0, 0
+
+	StaticText " "
+	StaticText "Shadow Mask", "Gray"
+	Option "Mask Type", "gl_crt_lottes_shadowMask", "CrtLottes_MaskType"
+	Slider "Rotate Mask", "gl_crt_lottes_maskRotate", -20.0, 0.0, 1.0, 0, gl_crt_lottes_shadowMask
+	Slider "Dark Level", "gl_crt_lottes_maskDark", 0.0, 2.0, 0.1, 1, gl_crt_lottes_shadowMask
+	Slider "Light Level", "gl_crt_lottes_maskLight", 0.0, 2.0, 0.1, 1, gl_crt_lottes_shadowMask
+
+	StaticText " "
+	StaticText "Bloom", "Gray"
+	Option "Enable", "gl_crt_lottes_enable_bloom", "OnOff"
+	Slider "Bloom Amount", "gl_crt_lottes_bloomAmount", 0.0, 1.0, 0.05, 2, gl_crt_lottes_enable_bloom
+	Slider "Filter Kernel Shape", "gl_crt_lottes_shape", 0.0, 10.0, 0.05, 2, gl_crt_lottes_enable_bloom
+	Slider "Brightness Boost", "gl_crt_lottes_brightboost", 0.0, 2.0, 0.05, 2, gl_crt_lottes_enable_bloom
+	Slider "Bloom Pixel Softness", "gl_crt_lottes_hardBloomPix", -2.0, -0.5, 0.1, 1, gl_crt_lottes_enable_bloom
+	Slider "Bloom Scanline Softness", "gl_crt_lottes_hardBloomScan", -4.0, -1.0, 0.1, 1, gl_crt_lottes_enable_bloom
+
+	StaticText " "
+	StaticText "Screen Warp", "Gray"
+	Slider "X", "gl_crt_lottes_warp_x", 0.0, 0.13, 0.01, 2
+	Slider "Y", "gl_crt_lottes_warp_y", 0.0, 0.13, 0.01, 2
+}

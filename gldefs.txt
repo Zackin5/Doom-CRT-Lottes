@@ -1,0 +1,21 @@
+hardwareshader postprocess scene
+{
+	Name "CRT-Lottes"
+	Shader "shaders/crt-lottes.fp" 330
+	Uniform float hardScan
+	Uniform float hardPix
+	Uniform float shadowMask
+	Uniform int maskRotate
+	Uniform float maskDark
+	Uniform float maskLight
+	Uniform int DO_BLOOM
+	Uniform float bloomAmount
+	Uniform float shape
+	Uniform float brightboost
+	Uniform float hardBloomPix
+	Uniform float hardBloomScan
+	Uniform float warp_x
+	Uniform float warp_y
+	Uniform int scaleInLinearGamma
+	Uniform int simpleLinearGamma
+}

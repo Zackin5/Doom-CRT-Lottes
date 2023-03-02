@@ -1,0 +1,17 @@
+nosave bool gl_crt_lottes = true;
+nosave float gl_crt_lottes_hardScan = -8.0;
+nosave float gl_crt_lottes_hardPix = -3.0;
+nosave int gl_crt_lottes_shadowMask = 3;
+nosave bool gl_crt_lottes_maskRotate = false;
+nosave float gl_crt_lottes_maskDark = 0.5;
+nosave float gl_crt_lottes_maskLight = 1.5;
+nosave bool gl_crt_lottes_enable_bloom = true;
+nosave float gl_crt_lottes_bloomAmount = 0.15;
+nosave float gl_crt_lottes_shape = 2.0;
+nosave float gl_crt_lottes_brightboost = 1.0;
+nosave float gl_crt_lottes_hardBloomPix = -1.5;
+nosave float gl_crt_lottes_hardBloomScan = -2.0;
+nosave float gl_crt_lottes_warp_x = 0.031;
+nosave float gl_crt_lottes_warp_y = 0.041;
+nosave bool gl_crt_lottes_scaleInLinearGamma = true;
+nosave bool gl_crt_lottes_simpleLinearGamma = false;
