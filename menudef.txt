@@ -6,10 +6,10 @@ AddOptionMenu "OptionsMenu"
 OptionValue CrtLottes_MaskType
 {
 	0, "Off"
-	1, "Compressed TV"
+	1, "TV"
 	2, "Aperture-grille"
 	3, "Stretched VGA"
-	4, "VGA Style"
+	4, "VGA"
 }
 
 OptionMenu "CrtLottesOptions"

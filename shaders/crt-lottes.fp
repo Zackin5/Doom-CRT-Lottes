@@ -156,7 +156,7 @@ vec2 Warp(vec2 pos){
 
 // Shadow mask 
 vec3 Mask(vec2 pos){
-  vec3 mask=vec3(maskDark,maskDark,maskDark);
+  vec3 mask=vec3(maskDark);
 
   vec2 mask_pos;
   if (maskRotate == 1)
