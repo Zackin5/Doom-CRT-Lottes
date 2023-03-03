@@ -5,7 +5,7 @@ class CrtLottesHandler : StaticEventHandler
 	override void UiTick()
 	{
 		PlayerInfo p = players[consoleplayer];
-		if (Cvar.GetCVar("gl_crt_lottes", p).GetInt() > 0)
+		if (Cvar.GetCVar("gl_crt_lottes_enable", p).GetInt() > 0)
 		{
 			Shader.SetEnabled(p, "CRT-Lottes", true);
 

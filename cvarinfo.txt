@@ -1,4 +1,4 @@
-nosave bool gl_crt_lottes = true;
+nosave bool gl_crt_lottes_enable = true;
 nosave float gl_crt_lottes_hardScan = -8.0;
 nosave float gl_crt_lottes_hardPix = -3.0;
 nosave int gl_crt_lottes_shadowMask = 3;

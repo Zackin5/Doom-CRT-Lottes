@@ -1,4 +1,4 @@
-hardwareshader postprocess scene
+HardwareShader PostProcess Screen
 {
 	Name "CRT-Lottes"
 	Shader "shaders/crt-lottes.fp" 330

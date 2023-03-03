@@ -15,103 +15,6 @@
 // Ported to GZDoom by Zackin5
 //
 
-// -- config  -- //
-uniform float hardScan <
-	ui_label = "Scanline Hardness";
-	ui_min = -20.0; ui_max = 0.0; ui_step = 1.0;
-	ui_type = "slider";
-	ui_category = "Image";
-> = -8.0;
-
-uniform float hardPix <
-	ui_label = "Pixel Hardness";
-	ui_min = -20.0; ui_max = 0.0; ui_step = 1.0;
-	ui_type = "slider";
-	ui_category = "Image";
-> = -3.0;
-
-uniform float shadowMask <
-	ui_label = "Mask Type";
-	ui_min = 0.0; ui_max = 4.0; ui_step = 1.0;
-	ui_type = "slider";
-	ui_category = "Shadow Mask";
-> = 3.0;
-
-uniform bool maskRotate <
-	ui_label = "Rotate Mask";
-	ui_category = "Shadow Mask";
-> = false;
-
-uniform float maskDark <
-	ui_label = "Dark Level";
-	ui_min = 0.0; ui_max = 2.0; ui_step = 0.1;
-	ui_type = "slider";
-	ui_category = "Shadow Mask";
-> = 0.5;
-
-uniform float maskLight <
-	ui_label = "Light Level";
-	ui_min = 0.0; ui_max = 2.0; ui_step = 0.1;
-	ui_type = "slider";
-	ui_category = "Shadow Mask";
-> = 1.5;
-
-uniform bool DO_BLOOM <
-	ui_label = "Enable";
-	ui_category = "Bloom";
-> = true;
-
-uniform float bloomAmount <
-	ui_label = "Bloom Amount";
-	ui_min = 0.0; ui_max = 1.0; ui_step = 0.05;
-	ui_type = "slider";
-	ui_category = "Bloom";
-> = 0.15;
-
-uniform float shape <
-	ui_label = "Filter Kernel Shape";
-	ui_min = 0.0; ui_max = 10.0; ui_step = 0.05;
-	ui_type = "slider";
-	ui_category = "Bloom";
-> = 2.0;
-
-uniform float brightboost <
-	ui_label = "Brightness Boost";
-	ui_min = 0.0; ui_max = 2.0; ui_step = 0.05;
-	ui_type = "slider";
-	ui_category = "Bloom";
-> = 1.0;
-
-uniform float hardBloomPix <
-	ui_label = "Bloom Pixel Softness";
-	ui_min = -2.0; ui_max = -0.5; ui_step = 0.1;
-	ui_type = "slider";
-	ui_category = "Bloom";
-> = -1.5;
-
-uniform float hardBloomScan <
-	ui_label = "Bloom Scanline Softness";
-	ui_min = -4.0; ui_max = -1.0; ui_step = 0.1;
-	ui_type = "slider";
-	ui_category = "Bloom";
-> = -2.0;
-
-uniform vec2 warp <
-	ui_label = "Screen Warp";
-	ui_min = 0.0; ui_max = 0.125; ui_step = 0.01;
-	ui_type = "slider";
-> = vec2(0.031, 0.041);
-
-uniform bool scaleInLinearGamma <
-	ui_label = "Scale in Linear Gamma";
-	ui_category = "Final Output";
-> = true;
-
-uniform bool simpleLinearGamma <
-	ui_label = "Use Simple Linear Gamma";
-	ui_category = "Final Output";
-> = false;
-
 //------------------------------------------------------------------------
 
 // sRGB to Linear.
@@ -122,7 +25,7 @@ float ToLinear1(float c)
 }
 vec3 ToLinear(vec3 c)
 {
-   if (scaleInLinearGamma || simpleLinearGamma) return c;
+   if (scaleInLinearGamma == 1 || simpleLinearGamma == 1) return c;
    return vec3(ToLinear1(c.r),ToLinear1(c.g),ToLinear1(c.b));
 }
 
@@ -135,8 +38,8 @@ float ToSrgb1(float c)
 
 vec3 ToSrgb(vec3 c)
 {
-    if (simpleLinearGamma) return pow(c, 1.0 / 2.2);
-    if (scaleInLinearGamma) return c;
+    if (simpleLinearGamma == 1) return pow(c, vec3(1.0 / 2.2));
+    if (scaleInLinearGamma == 1) return c;
     return vec3(ToSrgb1(c.r),ToSrgb1(c.g),ToSrgb1(c.b));
 }
 
@@ -145,10 +48,10 @@ vec3 ToSrgb(vec3 c)
 vec3 Fetch(vec2 pos, vec2 off, vec2 texture_size){
     pos=(floor(pos*texture_size.xy+off)+vec2(0.5,0.5))/texture_size.xy;
 
-    if (simpleLinearGamma)
-        return ToLinear(brightboost * pow(tex2D(ReShade::BackBuffer,pos.xy).rgb, 2.2));
+    if (simpleLinearGamma == 1)
+        return ToLinear(brightboost * pow(texture(InputTexture,pos.xy).rgb, vec3(2.2)));
     else
-        return ToLinear(brightboost * tex2D(ReShade::BackBuffer,pos.xy).rgb);
+        return ToLinear(brightboost * texture(InputTexture,pos.xy).rgb);
 }
 
 // Distance in emulated pixels to nearest texel.
@@ -256,7 +159,7 @@ vec3 Mask(vec2 pos){
   vec3 mask=vec3(maskDark,maskDark,maskDark);
 
   vec2 mask_pos;
-  if (maskRotate)
+  if (maskRotate == 1)
     mask_pos = vec2(pos.y, pos.x);
   else
     mask_pos = pos;
@@ -265,9 +168,9 @@ vec3 Mask(vec2 pos){
   if (shadowMask == 1) {
     float mask_line = maskLight;
     float odd=0.0;
-    if(frac(mask_pos.x/6.0)<0.5) odd = 1.0;
-    if(frac((mask_pos.y+odd)/2.0)<0.5) mask_line = maskDark;  
-    mask_pos.x=frac(mask_pos.x/3.0);
+    if(fract(mask_pos.x/6.0)<0.5) odd = 1.0;
+    if(fract((mask_pos.y+odd)/2.0)<0.5) mask_line = maskDark;  
+    mask_pos.x=fract(mask_pos.x/3.0);
    
     if(mask_pos.x<0.333)mask.r=maskLight;
     else if(mask_pos.x<0.666)mask.g=maskLight;
@@ -277,7 +180,7 @@ vec3 Mask(vec2 pos){
 
   // Aperture-grille.
   else if (shadowMask == 2) {
-    mask_pos.x=frac(mask_pos.x/3.0);
+    mask_pos.x=fract(mask_pos.x/3.0);
 
     if(mask_pos.x<0.333)mask.r=maskLight;
     else if(mask_pos.x<0.666)mask.g=maskLight;
@@ -287,7 +190,7 @@ vec3 Mask(vec2 pos){
   // Stretched VGA style shadow mask (same as prior shaders).
   else if (shadowMask == 3) {
     mask_pos.x+=mask_pos.y*3.0;
-    mask_pos.x=frac(mask_pos.x/6.0);
+    mask_pos.x=fract(mask_pos.x/6.0);
 
     if(mask_pos.x<0.333)mask.r=maskLight;
     else if(mask_pos.x<0.666)mask.g=maskLight;
@@ -298,7 +201,7 @@ vec3 Mask(vec2 pos){
   else if (shadowMask == 4) {
     mask_pos.xy=floor(mask_pos.xy*vec2(1.0,0.5));
     mask_pos.x+=mask_pos.y*3.0;
-    mask_pos.x=frac(mask_pos.x/6.0);
+    mask_pos.x=fract(mask_pos.x/6.0);
 
     if(mask_pos.x<0.333)mask.r=maskLight;
     else if(mask_pos.x<0.666)mask.g=maskLight;
@@ -306,20 +209,20 @@ vec3 Mask(vec2 pos){
   }
 
   return mask;
-}    
+}
 
 void main()
-{    
+{
     vec2 pos = Warp(TexCoord.xy);
     vec2 screenSize = textureSize( InputTexture, 0 );
     vec3 outColor = Tri(pos, screenSize);
 
-    if(DO_BLOOM)
+    if(DO_BLOOM == 1)
         //Add Bloom
         outColor.rgb+=Bloom(pos, screenSize)*bloomAmount;
 
-    if(shadowMask)
-        outColor.rgb*=Mask(floor(texcoord*screenSize)+vec2(0.5,0.5));
+    if(shadowMask > 0)
+        outColor.rgb*=Mask(floor(TexCoord*screenSize)+vec2(0.5,0.5));
 
-    return vec4(ToSrgb(outColor.rgb),1.0);
+    FragColor = vec4(ToSrgb(outColor.rgb),1.0);
 }
