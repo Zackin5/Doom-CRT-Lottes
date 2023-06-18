@@ -15,6 +15,7 @@ class CrtLottesHandler : StaticEventHandler
 			Shader.SetUniform1f(p, "CRT-Lottes", "maskRotate", Cvar.GetCVar("gl_crt_lottes_maskRotate", p).GetInt());
 			Shader.SetUniform1f(p, "CRT-Lottes", "maskDark", Cvar.GetCVar("gl_crt_lottes_maskDark", p).GetFloat());
 			Shader.SetUniform1f(p, "CRT-Lottes", "maskLight", Cvar.GetCVar("gl_crt_lottes_maskLight", p).GetFloat());
+			Shader.SetUniform1f(p, "CRT-Lottes", "maskUseDownscale", Cvar.GetCVar("gl_crt_lottes_maskUseDownscale", p).GetFloat());
 			Shader.SetUniform1f(p, "CRT-Lottes", "DO_BLOOM", Cvar.GetCVar("gl_crt_lottes_enable_bloom", p).GetInt());
 			Shader.SetUniform1f(p, "CRT-Lottes", "bloomAmount", Cvar.GetCVar("gl_crt_lottes_bloomAmount", p).GetFloat());
 			Shader.SetUniform1f(p, "CRT-Lottes", "shape", Cvar.GetCVar("gl_crt_lottes_shape", p).GetFloat());

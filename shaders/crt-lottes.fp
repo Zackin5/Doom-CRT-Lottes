@@ -217,18 +217,20 @@ vec3 Mask(vec2 pos){
 
 void main()
 {
-    vec2 screenSize = textureSize( InputTexture, 0 ) / downsizeMultiplier;
-    vec2 pos = TexCoord.xy;
-    vec2 posWarped = Warp(pos);
-    vec3 outColor = Tri(posWarped, pos, screenSize);
-    // vec3 outColor = vec3(0,0,0);
+    vec2 videoRes = textureSize( InputTexture, 0 );
+    vec2 downsizedRes = (videoRes / downsizeMultiplier);
+    vec2 pos = TexCoord.xy*(downsizedRes/videoRes)*(videoRes/downsizedRes);
+    vec2 posWarped = Warp(TexCoord.xy*(downsizedRes/videoRes)*(videoRes/downsizedRes));
+    vec3 outColor = Tri(posWarped, pos, downsizedRes);
 
     if(DO_BLOOM == 1)
         //Add Bloom
-        outColor.rgb+=Bloom(posWarped, pos, screenSize)*bloomAmount;
+        outColor.rgb+=Bloom(posWarped, pos, downsizedRes)*bloomAmount;
 
-    if(shadowMask > 0)
-        outColor.rgb*=Mask(floor(TexCoord*screenSize)+vec2(0.5,0.5));
+    if(shadowMask > 0){
+        vec2 maskRes = maskUseDownscale == 1 ? downsizedRes : videoRes;
+        outColor.rgb*=Mask(floor(TexCoord*maskRes)+vec2(0.5,0.5));
+    }
 
     FragColor = vec4(ToSrgb(outColor.rgb),1.0);
 }

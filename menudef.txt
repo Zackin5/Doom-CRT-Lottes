@@ -28,6 +28,7 @@ OptionMenu "CrtLottesOptions"
 	StaticText "Shadow Mask", "Gray"
 	Option "Mask Type", "gl_crt_lottes_shadowMask", "CrtLottes_MaskType"
 	Option "Rotate Mask", "gl_crt_lottes_maskRotate", "OnOff"
+	Option "Downscale", "gl_crt_lottes_maskUseDownscale", "OnOff"
 	Slider "Dark Level", "gl_crt_lottes_maskDark", 0.0, 2.0, 0.1, 1, gl_crt_lottes_shadowMask
 	Slider "Light Level", "gl_crt_lottes_maskLight", 0.0, 2.0, 0.1, 1, gl_crt_lottes_shadowMask
 

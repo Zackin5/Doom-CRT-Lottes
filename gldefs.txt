@@ -8,6 +8,7 @@ HardwareShader PostProcess Screen
 	Uniform int maskRotate
 	Uniform float maskDark
 	Uniform float maskLight
+	Uniform float maskUseDownscale
 	Uniform int DO_BLOOM
 	Uniform float bloomAmount
 	Uniform float shape
