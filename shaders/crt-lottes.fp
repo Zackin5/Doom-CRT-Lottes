@@ -133,7 +133,8 @@ vec3 Tri(vec2 pos, vec2 texture_size){
   float wa=Scan(pos,-1.0, texture_size);
   float wb=Scan(pos, 0.0, texture_size);
   float wc=Scan(pos, 1.0, texture_size);
-  return a*wa+b*wb+c*wc;}
+  return a*wa+b*wb+c*wc;
+}
   
 // Small bloom.
 vec3 Bloom(vec2 pos, vec2 texture_size){
@@ -147,7 +148,8 @@ vec3 Bloom(vec2 pos, vec2 texture_size){
   float wc=BloomScan(pos, 0.0, texture_size);
   float wd=BloomScan(pos, 1.0, texture_size);
   float we=BloomScan(pos, 2.0, texture_size);
-  return a*wa+b*wb+c*wc+d*wd+e*we;}
+  return a*wa+b*wb+c*wc+d*wd+e*we;
+}
 
 // Distortion of scanlines, and end of screen alpha.
 vec2 Warp(vec2 pos){
