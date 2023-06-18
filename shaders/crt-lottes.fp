@@ -46,7 +46,6 @@ vec3 ToSrgb(vec3 c)
 vec3 Fetch(vec2 pos, vec2 off, vec2 texture_size){
     pos=(floor(pos*texture_size.xy+off)+vec2(0.5,0.5))/texture_size.xy;
     if(max(abs(pos.x-0.5),abs(pos.y-0.5))>0.5)return vec3(0.0,0.0,0.0);
-
     return ToLinear(brightboost * texture(InputTexture,pos.xy).rgb);
 }
 
@@ -118,31 +117,35 @@ vec3 Horz7(vec2 pos, float off, vec2 texture_size){
 // Return scanline weight.
 float Scan(vec2 pos,float off, vec2 texture_size){
   float dst=Dist(pos, texture_size).y;
-  return Gaus(dst+off,hardScan);}
-  
+  return Gaus(dst+off,hardScan);
+}
+ 
   // Return scanline weight for bloom.
 float BloomScan(vec2 pos,float off, vec2 texture_size){
   float dst=Dist(pos, texture_size).y;
-  return Gaus(dst+off,hardBloomScan);}
+  return Gaus(dst+off,hardBloomScan);
+}
 
 // Allow nearest three lines to effect pixel.
-vec3 Tri(vec2 pos, vec2 texture_size){
-  vec3 a=Horz3(pos,-1.0, texture_size);
-  vec3 b=Horz5(pos, 0.0, texture_size);
-  vec3 c=Horz3(pos, 1.0, texture_size);
+vec3 Tri(vec2 posWarped, vec2 pos, vec2 texture_size){
+  vec3 a=Horz3(posWarped,-1.0, texture_size);
+  vec3 b=Horz5(posWarped, 0.0, texture_size);
+  vec3 c=Horz3(posWarped, 1.0, texture_size);
   float wa=Scan(pos,-1.0, texture_size);
   float wb=Scan(pos, 0.0, texture_size);
   float wc=Scan(pos, 1.0, texture_size);
   return a*wa+b*wb+c*wc;
+  // return vec3(wa, wb, wc);
+  // return vec3(wa, 0, 0);
 }
-  
+
 // Small bloom.
-vec3 Bloom(vec2 pos, vec2 texture_size){
-  vec3 a=Horz5(pos,-2.0, texture_size);
-  vec3 b=Horz7(pos,-1.0, texture_size);
-  vec3 c=Horz7(pos, 0.0, texture_size);
-  vec3 d=Horz7(pos, 1.0, texture_size);
-  vec3 e=Horz5(pos, 2.0, texture_size);
+vec3 Bloom(vec2 posWarped, vec2 pos, vec2 texture_size){
+  vec3 a=Horz5(posWarped,-2.0, texture_size);
+  vec3 b=Horz7(posWarped,-1.0, texture_size);
+  vec3 c=Horz7(posWarped, 0.0, texture_size);
+  vec3 d=Horz7(posWarped, 1.0, texture_size);
+  vec3 e=Horz5(posWarped, 2.0, texture_size);
   float wa=BloomScan(pos,-2.0, texture_size);
   float wb=BloomScan(pos,-1.0, texture_size);
   float wc=BloomScan(pos, 0.0, texture_size);
@@ -153,9 +156,11 @@ vec3 Bloom(vec2 pos, vec2 texture_size){
 
 // Distortion of scanlines, and end of screen alpha.
 vec2 Warp(vec2 pos){
-  pos=pos*2.0-1.0;    
-  pos*=vec2(1.0+(pos.y*pos.y)*warp_x,1.0+(pos.x*pos.x)*warp_y);
-  return pos*0.5+0.5;}
+  pos=pos*2.0-1.0;
+  pos*=vec2(1.0+(pos.y*pos.y)*warp_x, 1.0+(pos.x*pos.x)*warp_y);
+
+  return pos*0.5+0.5;
+}
 
 // Shadow mask 
 vec3 Mask(vec2 pos){
@@ -212,13 +217,15 @@ vec3 Mask(vec2 pos){
 
 void main()
 {
-    vec2 pos = Warp(TexCoord.xy);
-    vec2 screenSize = textureSize( InputTexture, 0 );
-    vec3 outColor = Tri(pos, screenSize);
+    vec2 screenSize = textureSize( InputTexture, 0 ) / downsizeMultiplier;
+    vec2 pos = TexCoord.xy;
+    vec2 posWarped = Warp(pos);
+    vec3 outColor = Tri(posWarped, pos, screenSize);
+    // vec3 outColor = vec3(0,0,0);
 
     if(DO_BLOOM == 1)
         //Add Bloom
-        outColor.rgb+=Bloom(pos, screenSize)*bloomAmount;
+        outColor.rgb+=Bloom(posWarped, pos, screenSize)*bloomAmount;
 
     if(shadowMask > 0)
         outColor.rgb*=Mask(floor(TexCoord*screenSize)+vec2(0.5,0.5));

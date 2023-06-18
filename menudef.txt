@@ -20,6 +20,7 @@ OptionMenu "CrtLottesOptions"
 
 	StaticText " "
 	StaticText "Image", "Gray"
+	Slider "Downsize Multiplier", "gl_crt_lottes_downsizeMultiplier", 1.0, 16.0, 0.25, 2
 	Slider "Scanline Hardness", "gl_crt_lottes_hardScan", -20.0, 0.0, 1.0, 0
 	Slider "Pixel Hardness", "gl_crt_lottes_hardPix", -20.0, 0.0, 1.0, 0
 

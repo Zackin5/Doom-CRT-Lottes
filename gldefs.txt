@@ -14,6 +14,7 @@ HardwareShader PostProcess Screen
 	Uniform float brightboost
 	Uniform float hardBloomPix
 	Uniform float hardBloomScan
+	Uniform float downsizeMultiplier
 	Uniform float warp_x
 	Uniform float warp_y
 	Uniform int scaleInLinearGamma
