@@ -17,7 +17,6 @@ OptionMenu "CrtLottesOptions"
 	Title "CRT Lottes Config"
 	Option "Enable", "gl_crt_lottes_enable", "OnOff"
 	Option "Scale in Linear Gamma", "gl_crt_lottes_scaleInLinearGamma", "OnOff"
-	Option "Use Simple Linear Gamma", "gl_crt_lottes_simpleLinearGamma", "OnOff"
 
 	StaticText " "
 	StaticText "Image", "Gray"

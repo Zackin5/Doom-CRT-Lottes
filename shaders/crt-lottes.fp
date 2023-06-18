@@ -21,26 +21,23 @@
 // Assuing using sRGB typed textures this should not be needed.
 float ToLinear1(float c)
 {
-   return(c<=0.04045)?c/12.92:pow((c+0.055)/1.055,2.4);
+   return scaleInLinearGamma==0 ? c : (c<=0.04045)?c/12.92:pow((c+0.055)/1.055,2.4);
 }
 vec3 ToLinear(vec3 c)
 {
-   if (scaleInLinearGamma == 1 || simpleLinearGamma == 1) return c;
-   return vec3(ToLinear1(c.r),ToLinear1(c.g),ToLinear1(c.b));
+   return scaleInLinearGamma==0 ? c : vec3(ToLinear1(c.r),ToLinear1(c.g),ToLinear1(c.b));
 }
 
 // Linear to sRGB.
 // Assuming using sRGB typed textures this should not be needed.
 float ToSrgb1(float c)
 {
-   return(c<0.0031308?c*12.92:1.055*pow(c,0.41666)-0.055);
+   return scaleInLinearGamma==0 ? c : (c<0.0031308?c*12.92:1.055*pow(c,0.41666)-0.055);
 }
 
 vec3 ToSrgb(vec3 c)
 {
-    if (simpleLinearGamma == 1) return pow(c, vec3(1.0 / 2.2));
-    if (scaleInLinearGamma == 1) return c;
-    return vec3(ToSrgb1(c.r),ToSrgb1(c.g),ToSrgb1(c.b));
+    return scaleInLinearGamma==0 ? c : vec3(ToSrgb1(c.r),ToSrgb1(c.g),ToSrgb1(c.b));
 }
 
 // Nearest emulated sample given floating point position and texel offset.
@@ -48,10 +45,7 @@ vec3 ToSrgb(vec3 c)
 vec3 Fetch(vec2 pos, vec2 off, vec2 texture_size){
     pos=(floor(pos*texture_size.xy+off)+vec2(0.5,0.5))/texture_size.xy;
 
-    if (simpleLinearGamma == 1)
-        return ToLinear(brightboost * pow(texture(InputTexture,pos.xy).rgb, vec3(2.2)));
-    else
-        return ToLinear(brightboost * texture(InputTexture,pos.xy).rgb);
+    return ToLinear(brightboost * texture(InputTexture,pos.xy).rgb);
 }
 
 // Distance in emulated pixels to nearest texel.

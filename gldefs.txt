@@ -17,5 +17,4 @@ HardwareShader PostProcess Screen
 	Uniform float warp_x
 	Uniform float warp_y
 	Uniform int scaleInLinearGamma
-	Uniform int simpleLinearGamma
 }

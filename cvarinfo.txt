@@ -14,4 +14,3 @@ nosave float gl_crt_lottes_hardBloomScan = -2.0;
 nosave float gl_crt_lottes_warp_x = 0.031;
 nosave float gl_crt_lottes_warp_y = 0.041;
 nosave bool gl_crt_lottes_scaleInLinearGamma = true;
-nosave bool gl_crt_lottes_simpleLinearGamma = false;
