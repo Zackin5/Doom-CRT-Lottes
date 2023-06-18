@@ -13,6 +13,7 @@
 // Please take and use, change, or whatever.
 //
 // Ported to GZDoom by Zackin5
+// Additional tweaks taken from RSRetroArch repo
 //
 
 //------------------------------------------------------------------------
@@ -44,15 +45,21 @@ vec3 ToSrgb(vec3 c)
 // Also zero's off screen.
 vec3 Fetch(vec2 pos, vec2 off, vec2 texture_size){
     pos=(floor(pos*texture_size.xy+off)+vec2(0.5,0.5))/texture_size.xy;
+    if(max(abs(pos.x-0.5),abs(pos.y-0.5))>0.5)return vec3(0.0,0.0,0.0);
 
     return ToLinear(brightboost * texture(InputTexture,pos.xy).rgb);
 }
 
 // Distance in emulated pixels to nearest texel.
-vec2 Dist(vec2 pos, vec2 texture_size){pos=pos*texture_size.xy;return -((pos-floor(pos))-vec2(0.5, 0.5));}
-    
+vec2 Dist(vec2 pos, vec2 texture_size){
+  pos=pos*texture_size.xy;
+  return -((pos-floor(pos))-vec2(0.5, 0.5));
+}
+
 // 1D Gaussian.
-float Gaus(float pos,float scale){return exp2(scale*pow(abs(pos),shape));}
+float Gaus(float pos,float scale){
+  return exp2(scale*pow(abs(pos),shape));
+}
 
 // 3-tap Gaussian filter along horz line.
 vec3 Horz3(vec2 pos, float off, vec2 texture_size){
@@ -152,11 +159,7 @@ vec2 Warp(vec2 pos){
 vec3 Mask(vec2 pos){
   vec3 mask=vec3(maskDark);
 
-  vec2 mask_pos;
-  if (maskRotate == 1)
-    mask_pos = vec2(pos.y, pos.x);
-  else
-    mask_pos = pos;
+  vec2 mask_pos = maskRotate == 1 ? vec2(pos.y, pos.x) : pos;
 
   // Very compressed TV style shadow mask.
   if (shadowMask == 1) {
@@ -210,13 +213,6 @@ void main()
     vec2 pos = Warp(TexCoord.xy);
     vec2 screenSize = textureSize( InputTexture, 0 );
     vec3 outColor = Tri(pos, screenSize);
-	
-	// Handle out of frame samples
-	vec2 vig_pos = abs(pos - 0.5);
-	if (vig_pos.x > 0.5 || vig_pos.y > 0.5)	{
-		FragColor = vec4(0,0,0,1.0);
-		return;
-	}
 
     if(DO_BLOOM == 1)
         //Add Bloom
