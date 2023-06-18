@@ -216,6 +216,13 @@ void main()
     vec2 pos = Warp(TexCoord.xy);
     vec2 screenSize = textureSize( InputTexture, 0 );
     vec3 outColor = Tri(pos, screenSize);
+	
+	// Handle out of frame samples
+	vec2 vig_pos = abs(pos - 0.5);
+	if (vig_pos.x > 0.5 || vig_pos.y > 0.5)	{
+		FragColor = vec4(0,0,0,1.0);
+		return;
+	}
 
     if(DO_BLOOM == 1)
         //Add Bloom
